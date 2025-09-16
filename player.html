@@ -1,67 +1,74 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-<meta charset="utf-8"/>
-<meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>LzPremium</title>
-<style>
-html, body {
-    margin: 0;
-    padding: 0;
-    width: 100%;
-    height: 100%;
-    overflow: hidden;
-    background: #000;
-}
-.player-container {
-    position: relative;
-    width: 100%;
-    height: 100%;
-}
-iframe {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    border: 0;
-    pointer-events: auto; /* ya habilitado */
-    display: block; /* mostrar desde el inicio */
-}
-.overlay {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: transparent; /* transparente en lugar de negro */
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    z-index: 9999;
-    text-align: center;
-}
-.overlay button {
-    background: #FFD700;
-    color: #000;
-    font-weight: bold;
-    padding: 15px 30px;
-    border: none;
-    border-radius: 10px;
-    cursor: pointer;
-    font-size: 18px;
-    transition: 0.3s;
-}
-.overlay button:hover {
-    background: #e6c200;
-}
-</style>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>Video Protegido Fullscreen</title>
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      background: #000;
+    }
 
+    .player-container {
+      position: relative;
+      width: 100%;
+      height: 100%;
+    }
+
+    iframe {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      border: 0;
+      pointer-events: none;
+      display: none;
+    }
+
+    .overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: #000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 9999;
+      text-align: center;
+    }
+
+    .overlay button {
+      background: #FFD700;
+      color: #000;
+      font-weight: bold;
+      padding: 15px 30px;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      font-size: 18px;
+      transition: 0.3s;
+    }
+
+    .overlay button:hover {
+      background: #e6c200;
+    }
+  </style>
 </head>
 <body>
 
 <div class="player-container">
-  <iframe id="canalPlayer" sandbox="allow-scripts allow-same-origin" allowfullscreen></iframe>
+  <iframe id="canalPlayer"
+          sandbox="allow-scripts allow-same-origin"
+          allowfullscreen></iframe>
+
   <div class="overlay" id="overlayBloqueoClicks">
     <button id="activarPlayerBtn">▶ Reproducir</button>
   </div>
@@ -72,18 +79,27 @@ var iframe = document.getElementById('canalPlayer');
 var overlay = document.getElementById('overlayBloqueoClicks');
 var activarBtn = document.getElementById('activarPlayerBtn');
 
-// Leer parámetro c codificado en Base64 de la URL
-var params = new URLSearchParams(window.location.search);
-var c = params.get('c');
-if(c){
+// Función para obtener parámetro de URL
+function getQueryParam(param) {
+  var urlParams = new URLSearchParams(window.location.search);
+  return urlParams.get(param);
+}
+
+// Obtener enlace codificado desde ?c=
+var canalCodificado = getQueryParam('c');
+if(!canalCodificado){
+  alert('No se encontró un enlace válido.');
+} else {
+  // Decodificar Base64
   try {
-    var canalURL = atob(c); // decodificar Base64
+    var canalURL = atob(decodeURIComponent(canalCodificado));
     iframe.src = canalURL;
   } catch(e){
-    console.error('Error decodificando URL:', e);
+    alert('Enlace inválido.');
   }
 }
 
+// Inicialmente bloqueado
 iframe.style.pointerEvents = 'none';
 iframe.style.display = 'none';
 
@@ -105,10 +121,14 @@ activarBtn.addEventListener('click', function(e){
     window.__original_window_open = originalOpen;
   })();
 
-  // Solicitar fullscreen
-  if (iframe.requestFullscreen) iframe.requestFullscreen();
-  else if (iframe.webkitRequestFullscreen) iframe.webkitRequestFullscreen();
-  else if (iframe.msRequestFullscreen) iframe.msRequestFullscreen();
+  // Solicitar fullscreen del iframe
+  if (iframe.requestFullscreen) {
+    iframe.requestFullscreen();
+  } else if (iframe.webkitRequestFullscreen) { /* Safari */
+    iframe.webkitRequestFullscreen();
+  } else if (iframe.msRequestFullscreen) { /* IE/Edge */
+    iframe.msRequestFullscreen();
+  }
 
   console.log('Player activado y fullscreen solicitado.');
 });
