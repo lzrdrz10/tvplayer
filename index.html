@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Panel TVPlayer</title>
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    background: #111;
+    color: #FFD700;
+    margin: 0;
+    padding: 20px;
+  }
+  input, textarea {
+    width: 100%;
+    padding: 10px;
+    margin-top: 10px;
+    background: #000;
+    color: #FFD700;
+    border: 1px solid #FFD700;
+    border-radius: 8px;
+  }
+  button {
+    margin-top: 10px;
+    padding: 10px 20px;
+    background: #FFD700;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: bold;
+    color: #000;
+    transition: 0.3s;
+  }
+  button:hover {
+    background: #e6c200;
+  }
+</style>
+</head>
+<body>
+
+<h2>Panel TVPlayer</h2>
+<p>Pega tu enlace de canal:</p>
+<input type="text" id="canalInput" placeholder="https://embed.saohgdasregions.fun/embed/cartoonito.html">
+<button id="generarBtn">Generar enlace protegido</button>
+
+<p>Enlace generado:</p>
+<input type="text" id="enlaceOutput" readonly>
+<button id="copiarBtn">📋 Copiar enlace</button>
+
+<script>
+// URL base de tu repositorio GitHub Pages
+var baseURL = 'https://lzrdrz10.github.io/tvplayer/';
+
+var generarBtn = document.getElementById('generarBtn');
+var canalInput = document.getElementById('canalInput');
+var enlaceOutput = document.getElementById('enlaceOutput');
+var copiarBtn = document.getElementById('copiarBtn');
+
+generarBtn.addEventListener('click', function(){
+  var canalURL = canalInput.value.trim();
+  if(!canalURL){
+    alert('Ingresa un enlace válido');
+    return;
+  }
+
+  // Codificar en Base64
+  var codificado = btoa(canalURL);
+
+  // Generar enlace completo al player.html
+  var enlace = baseURL + 'player.html?c=' + encodeURIComponent(codificado);
+  enlaceOutput.value = enlace;
+});
+
+copiarBtn.addEventListener('click', function(){
+  if(enlaceOutput.value.trim() === ''){
+    alert('Primero genera un enlace.');
+    return;
+  }
+
+  enlaceOutput.select();
+  enlaceOutput.setSelectionRange(0, 99999); // Para móviles
+  navigator.clipboard.writeText(enlaceOutput.value).then(function(){
+    alert('¡Enlace copiado al portapapeles!');
+  }).catch(function(err){
+    alert('No se pudo copiar: ' + err);
+  });
+});
+</script>
+
+</body>
+</html>
