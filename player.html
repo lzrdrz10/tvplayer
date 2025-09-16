@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Video Protegido Fullscreen</title>
+<style>
+  html, body {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    background: #000;
+  }
+  .player-container {
+    position: relative;
+    width: 100%;
+    height: 100%;
+  }
+  iframe {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border: 0;
+    pointer-events: none;
+    display: none;
+  }
+  .overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: #000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+    text-align: center;
+  }
+  .overlay button {
+    background: #FFD700;
+    color: #000;
+    font-weight: bold;
+    padding: 15px 30px;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    font-size: 18px;
+    transition: 0.3s;
+  }
+  .overlay button:hover {
+    background: #e6c200;
+  }
+</style>
+</head>
+<body>
+
+<div class="player-container">
+  <iframe id="canalPlayer" sandbox="allow-scripts allow-same-origin" allowfullscreen></iframe>
+  <div class="overlay" id="overlayBloqueoClicks">
+    <button id="activarPlayerBtn">▶ Reproducir</button>
+  </div>
+</div>
+
+<script>
+var iframe = document.getElementById('canalPlayer');
+var overlay = document.getElementById('overlayBloqueoClicks');
+var activarBtn = document.getElementById('activarPlayerBtn');
+
+// Leer parámetro c codificado en Base64 de la URL
+var params = new URLSearchParams(window.location.search);
+var c = params.get('c');
+if(c){
+  try {
+    var canalURL = atob(c); // decodificar Base64
+    iframe.src = canalURL;
+  } catch(e){
+    console.error('Error decodificando URL:', e);
+  }
+}
+
+iframe.style.pointerEvents = 'none';
+iframe.style.display = 'none';
+
+activarBtn.addEventListener('click', function(e){
+  e.preventDefault();
+
+  // Mostrar iframe y habilitar interacción
+  iframe.style.pointerEvents = 'auto';
+  iframe.style.display = 'block';
+  overlay.style.display = 'none';
+
+  // Bloquear popups
+  (function(){
+    var originalOpen = window.open;
+    window.open = function(url, name, specs) {
+      console.warn('Popup bloqueado:', url);
+      return null;
+    };
+    window.__original_window_open = originalOpen;
+  })();
+
+  // Solicitar fullscreen
+  if (iframe.requestFullscreen) iframe.requestFullscreen();
+  else if (iframe.webkitRequestFullscreen) iframe.webkitRequestFullscreen();
+  else if (iframe.msRequestFullscreen) iframe.msRequestFullscreen();
+
+  console.log('Player activado y fullscreen solicitado.');
+});
+</script>
+
+</body>
+</html>
