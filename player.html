@@ -4,14 +4,14 @@
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <title>Video Protegido Fullscreen</title>
-  <style>
+ <style>
     html, body {
       margin: 0;
       padding: 0;
       width: 100%;
       height: 100%;
       overflow: hidden;
-      background: #000;
+      background: #000; /* Fondo negro inicial */
     }
 
     .player-container {
@@ -27,8 +27,8 @@
       width: 100%;
       height: 100%;
       border: 0;
-      pointer-events: none;
-      display: none;
+      pointer-events: none; /* Bloqueado hasta activación */
+      display: none; /* Oculto hasta pulsar reproducir */
     }
 
     .overlay {
@@ -37,7 +37,7 @@
       left: 0;
       width: 100%;
       height: 100%;
-      background: #000;
+      background: #000; /* Fondo negro mientras no se reproduce */
       display: flex;
       align-items: center;
       justify-content: center;
