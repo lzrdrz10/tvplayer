@@ -4,14 +4,14 @@
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <title>Video Protegido Fullscreen</title>
- <style>
+  <style>
     html, body {
       margin: 0;
       padding: 0;
       width: 100%;
       height: 100%;
       overflow: hidden;
-      background: #000; /* Fondo negro inicial */
+      background: #000;
     }
 
     .player-container {
@@ -27,8 +27,8 @@
       width: 100%;
       height: 100%;
       border: 0;
-      pointer-events: none; /* Bloqueado hasta activación */
-      display: none; /* Oculto hasta pulsar reproducir */
+      pointer-events: none;
+      display: none;
     }
 
     .overlay {
@@ -37,7 +37,7 @@
       left: 0;
       width: 100%;
       height: 100%;
-      background: #000; /* Fondo negro mientras no se reproduce */
+      background: #000;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -85,18 +85,12 @@ function getQueryParam(param) {
   return urlParams.get(param);
 }
 
-// Obtener enlace codificado desde ?c=
-var canalCodificado = getQueryParam('c');
-if(!canalCodificado){
+// Obtener enlace directamente desde ?c=
+var canalURL = getQueryParam('c');
+if(!canalURL){
   alert('No se encontró un enlace válido.');
 } else {
-  // Decodificar Base64
-  try {
-    var canalURL = atob(decodeURIComponent(canalCodificado));
-    iframe.src = canalURL;
-  } catch(e){
-    alert('Enlace inválido.');
-  }
+  iframe.src = decodeURIComponent(canalURL);
 }
 
 // Inicialmente bloqueado
