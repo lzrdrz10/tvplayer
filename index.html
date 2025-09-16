@@ -64,11 +64,8 @@ generarBtn.addEventListener('click', function(){
     return;
   }
 
-  // Codificar en Base64
-  var codificado = btoa(canalURL);
-
-  // Generar enlace completo al player.html
-  var enlace = baseURL + 'player.html?c=' + encodeURIComponent(codificado);
+  // Generar enlace completo al player.html con el enlace directo
+  var enlace = baseURL + 'player.html?c=' + encodeURIComponent(canalURL);
   enlaceOutput.value = enlace;
 });
 
